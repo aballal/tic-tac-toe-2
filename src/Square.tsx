@@ -1,4 +1,4 @@
-import { Component } from "react";
+import {Component, Fragment} from "react";
 import {Player} from "./shared";
 
 type Props = {
@@ -9,9 +9,11 @@ type Props = {
 export class Square extends Component<Props> {
     render() {
         return (
-            <button className="square" onClick={() => this.props.onClick()}>
-                {this.props.value}
-            </button>
+            <Fragment>
+                <button className="square" onClick={() => this.props.onClick()}>
+                    {this.props.value}
+                </button>
+            </Fragment>
         );
     }
 }
