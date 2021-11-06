@@ -1,10 +1,22 @@
 import React from 'react';
 
-class Square extends React.Component {
-  render() {
+type Props = {
+    value: number
+}
+
+type State = {
+    value: string | null
+}
+
+class Square extends React.Component<Props, State> {
+    state: State = {
+        value: null
+    }
+
+    render() {
     return (
-        <button className="square">
-          {/* TODO */}
+        <button className="square" onClick={() => this.setState({value : 'X'})}>
+            {this.state.value}
         </button>
     );
   }
@@ -12,7 +24,7 @@ class Square extends React.Component {
 
 class Board extends React.Component {
   renderSquare(i: number) {
-    return <Square />;
+    return <Square value={i}/>;
   }
 
   render() {
