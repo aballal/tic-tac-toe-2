@@ -9,9 +9,16 @@ body {
   font-size: 2em;
 }
 
-.winner {
+.win, .draw {
+  animation: blinker 2s linear infinite;
+}
+
+.win {
   color: darkred;
-  animation: blinker 1s linear infinite;
+}
+
+.draw {
+  color: darkgreen;
 }
 
 @keyframes blinker {

@@ -8,6 +8,8 @@ type State = {
     winner?: Player;
 }
 
+type Status = 'win' | 'draw' | 'turn';
+
 export class Board extends Component<{},State> {
     state: State = {
         squares: Array(9).fill(null),
@@ -34,7 +36,7 @@ export class Board extends Component<{},State> {
     }
 
     render() {
-        const status = this.state.winner ? `Player ${this.state.winner} wins!`: `Next player: ${this.state.nextPlayer}`;
+        const status = this.getStatus();
 
         return (
             <div>
@@ -49,9 +51,23 @@ export class Board extends Component<{},State> {
                     {this.renderSquare(7)}
                     {this.renderSquare(8)}
                 </div>
-                <div className={['status', this.state.winner ? 'winner' : ''].join(' ')}>{status}</div>
+                <div className={['status', status].join(' ')}>{this.getStatusMessage(status)}</div>
             </div>
         );
+    }
+
+    private getStatus(): Status {
+        if (this.state.winner) return 'win';
+        if (!this.state.squares.some(v => v === null)) return 'draw';
+        return 'turn';
+    }
+
+    private getStatusMessage(status: Status): string {
+        switch(status) {
+            case 'win': return `Player ${this.state.winner} wins 🎉!`;
+            case 'draw': return `It's a draw ⚖️`;
+        }
+        return `Next player: ${this.state.nextPlayer}`;
     }
 }
 
