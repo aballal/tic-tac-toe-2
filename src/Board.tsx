@@ -34,9 +34,12 @@ export class Board extends Component<{},State> {
     }
 
     renderSquare(i: number) {
+        const { win } = this.state;
+        const winningSquare = win && win.line.includes(i) ? 'win' : '';
         return <Square
             value={this.state.squares[i]}
             onClick={() => this.handleClick(i)}
+            className={winningSquare}
         />;
     }
 
