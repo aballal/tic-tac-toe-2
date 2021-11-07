@@ -5,10 +5,15 @@ import { Square } from "./Square";
 type State = {
     squares: (Player|null)[];
     nextPlayer: Player;
-    winner?: Player;
+    win?: Win;
 }
 
 type Status = 'win' | 'draw' | 'turn';
+type Line = [number, number, number];
+type Win = {
+    player: Player;
+    line: Line;
+}
 
 export class Board extends Component<{},State> {
     state: State = {
@@ -17,14 +22,14 @@ export class Board extends Component<{},State> {
     }
 
     handleClick(i: number) {
-        if (this.state.winner || this.state.squares[i]) return;
+        if (this.state.win || this.state.squares[i]) return;
         const squares = [...this.state.squares];
         squares[i] = this.state.nextPlayer;
-        const winner = calculateWinner(squares);
+        const win = calculateWinner(squares);
         this.setState({
             squares: squares,
             nextPlayer: this.state.nextPlayer === 'X' ? 'O' : 'X',
-            winner,
+            win,
         });
     }
 
@@ -57,27 +62,26 @@ export class Board extends Component<{},State> {
     }
 
     private getStatus(): Status {
-        if (this.state.winner) return 'win';
+        if (this.state.win) return 'win';
         if (!this.state.squares.some(v => v === null)) return 'draw';
         return 'turn';
     }
 
     private getStatusMessage(status: Status): string {
         switch(status) {
-            case 'win': return `Player ${this.state.winner} wins 🎉!`;
+            case 'win': return `Player ${this.state.win!.player} wins 🎉!`;
             case 'draw': return `It's a draw ⚖️`;
         }
         return `Next player: ${this.state.nextPlayer}`;
     }
 }
 
-function calculateWinner(squares: (Player|null)[]): Player | undefined {
-    const horizontals = [[0,1,2], [3,4,5], [6,7,8]];
-    const verticals = [[0,3,6],[1,4,7],[2,5,8]];
-    const diagonals = [[0, 4, 8],[2, 4, 6]];
+function calculateWinner(squares: (Player|null)[]): Win | undefined {
+    const horizontals: Line[] = [[0,1,2], [3,4,5], [6,7,8]];
+    const verticals: Line[] = [[0,3,6], [1,4,7], [2,5,8]];
+    const diagonals: Line[] = [[0,4,8], [2,4,6]];
     for (const line of [...horizontals, ...verticals, ...diagonals]) {
-        const content = line.map(item => squares[item]).join('');
-        if (content === 'XXX') return 'X';
-        if (content === 'OOO') return 'O';
+        const [a, b, c] = line;
+        if (squares[a] && squares[a] === squares[b] && squares[b] === squares[c]) return { player: squares[a]!, line };
     }
 }
